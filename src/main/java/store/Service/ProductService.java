@@ -20,15 +20,14 @@ public class ProductService {
         this.outputView = new OutputView();
     }
 
-
-    public List<Product> loadProducts(String PromotionsFilePath, String ProductsFilePath) throws IOException {
+    public void loadProducts(String PromotionsFilePath, String ProductsFilePath) throws IOException {
         Map<String, Promotion> promotions = productRepository.loadPromotions(PromotionsFilePath);
-        return productRepository.loadProducts(ProductsFilePath, promotions);
+        productRepository.loadProducts(ProductsFilePath, promotions);
     }
 
-    public void displayProducts(List<Product> products) {
+    public void displayProducts() {
         outputView.welcomeStoreView();
-        List<String> productDisplays = ProductsViewUtil.ProductsViewFormatter(products);
+        List<String> productDisplays = ProductsViewUtil.ProductsViewFormatter(productRepository.getProducts());
         outputView.productsView(productDisplays);
     }
 

@@ -12,7 +12,6 @@ public class OutputView {
 
     public void productsView(List<String> productDisplays){
         productDisplays.forEach(System.out::println);
-        System.out.println(OutputMessage.PURCHASE_PROMPT.getMessage());
     }
 
 }

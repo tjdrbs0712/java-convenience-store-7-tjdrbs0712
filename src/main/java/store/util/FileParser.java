@@ -5,7 +5,7 @@ import store.domain.Promotion;
 
 import java.util.Map;
 
-public class LoadFileParse {
+public class FileParser {
 
     public static Promotion parsePromotion(String line) {
         String[] data = line.split(",");

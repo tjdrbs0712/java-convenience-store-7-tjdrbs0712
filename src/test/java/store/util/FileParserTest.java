@@ -9,13 +9,13 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LoadFileParseTest {
+class FileParserTest {
 
     @Test
     @DisplayName("읽어온 프로모션을 제대로 파싱하는지 테스트")
     void testParsePromotion() {
         String line = "탄산2+1,2,1,2024-01-01,2024-12-31";
-        Promotion promotion = LoadFileParse.parsePromotion(line);
+        Promotion promotion = FileParser.parsePromotion(line);
 
         assertThat(promotion.getName()).isEqualTo("탄산2+1");
         assertThat(promotion.getBuy()).isEqualTo(2);
@@ -31,7 +31,7 @@ class LoadFileParseTest {
                 "탄산2+1", new Promotion("탄산2+1", 2, 1, "2024-01-01", "2024-12-31")
         );
         String line = "콜라,1000,10,탄산2+1";
-        Product product = LoadFileParse.parseProduct(line, promotions);
+        Product product = FileParser.parseProduct(line, promotions);
 
         assertThat(product.getName()).isEqualTo("콜라");
         assertThat(product.getPrice()).isEqualTo(1000);

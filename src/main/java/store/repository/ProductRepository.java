@@ -2,7 +2,7 @@ package store.repository;
 
 import store.domain.Product;
 import store.domain.Promotion;
-import store.util.LoadFileParse;
+import store.util.FileParser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,31 +13,34 @@ import java.util.List;
 import java.util.Map;
 
 public class ProductRepository {
+
+    private final List<Product> products = new ArrayList<>();
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
     public Map<String, Promotion> loadPromotions(String filePath) throws IOException {
         Map<String, Promotion> promotions = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
-                Promotion promotion = LoadFileParse.parsePromotion(line);
+                Promotion promotion = FileParser.parsePromotion(line);
                 promotions.put(promotion.getName(), promotion);
             }
         }
         return promotions;
     }
 
-
-    public List<Product> loadProducts(String filePath, Map<String, Promotion> promotions) throws IOException{
-        List<Product> products = new ArrayList<>();
-
+    public void loadProducts(String filePath, Map<String, Promotion> promotions) throws IOException{
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
-                Product product = LoadFileParse.parseProduct(line, promotions);
+                Product product = FileParser.parseProduct(line, promotions);
                 products.add(product);
             }
         }
-        return products;
     }
 
 }
