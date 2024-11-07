@@ -1,14 +1,10 @@
 package store.util;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import store.constant.FileConstant;
 import store.domain.Product;
 import store.domain.Promotion;
-import store.repository.ProductRepository;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
