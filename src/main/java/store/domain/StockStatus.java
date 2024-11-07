@@ -1,4 +1,4 @@
-package store.message;
+package store.domain;
 
 public enum StockStatus {
     IN_STOCK("개"),

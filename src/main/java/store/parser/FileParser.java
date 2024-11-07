@@ -1,4 +1,4 @@
-package store.util;
+package store.parser;
 
 import store.domain.Product;
 import store.domain.Promotion;

@@ -2,7 +2,7 @@ package store.repository;
 
 import store.domain.Product;
 import store.domain.Promotion;
-import store.util.FileParser;
+import store.parser.FileParser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,7 +16,7 @@ public class ProductRepository {
 
     private final List<Product> products = new ArrayList<>();
 
-    public List<Product> getProducts() {
+    public List<Product> getProducts(){
         return products;
     }
 

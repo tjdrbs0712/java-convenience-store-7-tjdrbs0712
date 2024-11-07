@@ -1,4 +1,4 @@
-package store.message;
+package store.domain;
 
 public enum PromotionType {
     TWO_PLUS_ONE("탄산2+1"),

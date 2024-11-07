@@ -2,8 +2,8 @@ package store.util;
 
 import store.domain.Product;
 import store.domain.Promotion;
-import store.message.PromotionType;
-import store.message.StockStatus;
+import store.domain.PromotionType;
+import store.domain.StockStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
