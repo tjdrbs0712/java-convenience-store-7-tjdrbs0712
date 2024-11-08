@@ -1,14 +1,13 @@
 package store.util;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import store.domain.Product;
-import store.domain.Promotion;
-import store.parser.FileParser;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import store.domain.store.Product;
+import store.domain.store.Promotion;
+import store.parser.FileParser;
 
 class FileParserTest {
 
