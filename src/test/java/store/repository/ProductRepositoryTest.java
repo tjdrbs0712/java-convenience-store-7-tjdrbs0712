@@ -1,17 +1,16 @@
 package store.repository;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import store.constant.FileConstant;
-import store.domain.Product;
-import store.domain.Promotion;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import store.constant.FileConstant;
+import store.domain.store.Product;
+import store.domain.store.Promotion;
 
 class ProductRepositoryTest {
 
@@ -44,7 +43,8 @@ class ProductRepositoryTest {
         int price = 1000;
         String promotion = "탄산2+1";
 
-        List<Product> products = productRepository.loadProducts(filePath, promotions);
+        productRepository.loadProducts(filePath, promotions);
+        List<Product> products = productRepository.getProducts();
         Product product = products.getFirst();
 
         assertThat(name).isEqualTo(product.getName());
