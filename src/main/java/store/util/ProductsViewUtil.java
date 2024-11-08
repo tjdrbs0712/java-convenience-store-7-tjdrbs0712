@@ -1,18 +1,16 @@
 package store.util;
 
-import store.domain.Product;
-import store.domain.Promotion;
-import store.domain.PromotionType;
-import store.domain.StockStatus;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import store.domain.Product;
+import store.domain.Promotion;
+import store.domain.StockStatus;
 
 public class ProductsViewUtil {
 
 
-    public static List<String> ProductsViewFormatter(List<Product> products){
+    public static List<String> ProductsViewFormatter(List<Product> products) {
         LocalDate today = LocalDate.now();
         List<String> productDisplays = new ArrayList<>();
 
@@ -26,10 +24,10 @@ public class ProductsViewUtil {
         return productDisplays;
     }
 
-    private static String formatProducts(Product product, LocalDate today){
+    private static String formatProducts(Product product, LocalDate today) {
         String promotionInfo = getPromotionInfo(product.getPromotion(), today);
         String stockInfo = product.getQuantity() + StockStatus.IN_STOCK.getStatus();
-        if(product.getQuantity() == 0){
+        if (product.getQuantity() == 0) {
             stockInfo = StockStatus.OUT_OF_STOCK.getStatus();
         }
 
@@ -54,7 +52,7 @@ public class ProductsViewUtil {
     private static String getPromotionInfo(Promotion promotion, LocalDate today) {
         if (isValidPromotion(promotion, today)) {
             try {
-                return PromotionType.valueOf(promotion.getName()).getPromotionName();
+                return promotion.getName();
             } catch (IllegalArgumentException e) {
                 return promotion.getName();
             }
