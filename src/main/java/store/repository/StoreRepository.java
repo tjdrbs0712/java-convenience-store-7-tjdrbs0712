@@ -1,10 +1,14 @@
-package store.domain.store;
+package store.repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import store.domain.store.Product;
+import store.domain.store.Promotion;
 
-public class Store {
+public class StoreRepository {
+
+    public static final String PROMOTION_NAME = "_NO_PROMOTION";
 
     private final Map<String, Product> products = new HashMap<>();
 
@@ -24,11 +28,18 @@ public class Store {
         return products.get(key);
     }
 
+    public List<Product> findProducts(String name) {
+        return products.entrySet().stream()
+                .filter(entry -> entry.getKey().contains(name))
+                .map(Map.Entry::getValue)
+                .toList();
+    }
+
     private String generateKey(String name, Promotion promotion) {
-        String promotionName = "NO_PROMOTION";
+        String promotionName = PROMOTION_NAME;
         if (promotion != null) {
             promotionName = promotion.getName();
         }
-        return name + "_" + promotionName;
+        return name + promotionName;
     }
 }

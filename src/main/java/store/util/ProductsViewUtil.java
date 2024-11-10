@@ -3,9 +3,9 @@ package store.util;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import store.domain.Product;
-import store.domain.Promotion;
 import store.domain.StockStatus;
+import store.domain.store.Product;
+import store.domain.store.Promotion;
 
 public class ProductsViewUtil {
 

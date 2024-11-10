@@ -1,14 +1,14 @@
 package store.validation;
 
-import store.domain.Product;
+import java.util.List;
+import store.domain.store.Product;
 import store.error.InputException;
 import store.message.ErrorMessage;
 
-import java.util.List;
-
 public class ProductValidator {
 
-    public static void validateProductContains(List<Product> products, String productName){
+    //구매하려는 상품이 있는지 검증
+    public static void validateProductContains(List<Product> products, String productName) {
         boolean exists = products.stream()
                 .anyMatch(product -> product.getName().equals(productName));
 

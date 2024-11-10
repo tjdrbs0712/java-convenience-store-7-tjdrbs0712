@@ -5,23 +5,23 @@ import static store.constant.FileConstant.PROMOTIONS_FILE_PATH;
 
 import store.Service.OrderService;
 import store.Service.ProductService;
-import store.domain.store.Store;
 import store.repository.ProductRepository;
+import store.repository.StoreRepository;
 import store.view.InputView;
 import store.view.OutputView;
 
 public class StoreController {
 
-    private final Store store = new Store();
     private final ProductService productService;
     private final OrderService orderService;
     private final ProductRepository productRepository = new ProductRepository();
+    private final StoreRepository storeRepository = new StoreRepository();
     private final InputView inputView = new InputView();
     private final OutputView outputView = new OutputView();
 
     public StoreController() {
-        this.productService = new ProductService(store, productRepository, outputView);
-        this.orderService = new OrderService(store, productRepository, inputView, outputView);
+        this.productService = new ProductService(storeRepository, productRepository, outputView);
+        this.orderService = new OrderService(storeRepository, productRepository, inputView, outputView);
     }
 
     public void run() {

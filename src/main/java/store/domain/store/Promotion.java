@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.store;
 
 public class Promotion {
     private String name;
@@ -15,7 +15,7 @@ public class Promotion {
         this.endDate = endDate;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -27,11 +27,11 @@ public class Promotion {
         return get;
     }
 
-    public String getStartDate(){
+    public String getStartDate() {
         return startDate;
     }
 
-    public String getEndDate(){
+    public String getEndDate() {
         return endDate;
     }
 }

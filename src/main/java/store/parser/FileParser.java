@@ -1,9 +1,8 @@
 package store.parser;
 
-import store.domain.Product;
-import store.domain.Promotion;
-
 import java.util.Map;
+import store.domain.store.Product;
+import store.domain.store.Promotion;
 
 public class FileParser {
 

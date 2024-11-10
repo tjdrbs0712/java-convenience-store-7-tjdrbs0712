@@ -1,4 +1,4 @@
-package store.domain;
+package store.domain.store;
 
 public class Product {
     private String name;
@@ -13,7 +13,7 @@ public class Product {
         this.promotion = promotion;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -28,4 +28,9 @@ public class Product {
     public Promotion getPromotion() {
         return promotion;
     }
+
+    public void updateQuantity(int purchaseQuantity) {
+        quantity -= purchaseQuantity;
+    }
+
 }

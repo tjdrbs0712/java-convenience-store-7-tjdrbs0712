@@ -1,18 +1,13 @@
 package store.domain.receipt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Receipt {
-    
-    private final List<PurchaseProduct> purchaseProducts;
-    private final List<GiveAway> giveAway;
-    private final PurchaseAmount purchaseAmount;
 
-    public Receipt(List<PurchaseProduct> purchaseProducts, List<GiveAway> giveAway, PurchaseAmount purchaseAmount) {
-        this.purchaseProducts = purchaseProducts;
-        this.giveAway = giveAway;
-        this.purchaseAmount = purchaseAmount;
-    }
+    private final List<PurchaseProduct> purchaseProducts = new ArrayList<>();
+    private final List<GiveAway> giveAway = new ArrayList<>();
+    private PurchaseAmount purchaseAmount;
 
     public List<PurchaseProduct> getPurchaseProducts() {
         return purchaseProducts;
@@ -24,5 +19,17 @@ public class Receipt {
 
     public PurchaseAmount getPurchaseAmount() {
         return purchaseAmount;
+    }
+
+    public void addPurchaseProducts(PurchaseProduct product) {
+        purchaseProducts.add(product);
+    }
+
+    public void addGiveAway(GiveAway giveAway) {
+        this.giveAway.add(giveAway);
+    }
+
+    public void resultPurchaseAmount(PurchaseAmount purchaseAmount) {
+        this.purchaseAmount = purchaseAmount;
     }
 }

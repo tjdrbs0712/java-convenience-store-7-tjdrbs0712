@@ -1,9 +1,5 @@
 package store.repository;
 
-import store.domain.Product;
-import store.domain.Promotion;
-import store.parser.FileParser;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,12 +7,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import store.domain.store.Product;
+import store.domain.store.Promotion;
+import store.parser.FileParser;
 
 public class ProductRepository {
 
     private final List<Product> products = new ArrayList<>();
 
-    public List<Product> getProducts(){
+    public List<Product> getProducts() {
         return products;
     }
 
@@ -33,7 +32,7 @@ public class ProductRepository {
         return promotions;
     }
 
-    public void loadProducts(String filePath, Map<String, Promotion> promotions) throws IOException{
+    public void loadProducts(String filePath, Map<String, Promotion> promotions) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
