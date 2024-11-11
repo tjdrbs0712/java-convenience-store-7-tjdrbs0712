@@ -31,6 +31,11 @@ public class Product {
         return promotion;
     }
 
+    /**
+     * 구매한 상품 만큼 재고 -
+     *
+     * @param purchaseQuantity 구매한 상품 재고
+     */
     public void updateQuantity(int purchaseQuantity) {
         quantity -= purchaseQuantity;
     }

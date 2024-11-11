@@ -29,4 +29,10 @@ public class ProductParserValidator {
         }
     }
 
+    public static void validateProductQuantityMinus(int quantity) {
+        if (quantity < 1) {
+            throw new InputException(ErrorMessage.INVALID_INPUT);
+        }
+    }
+
 }

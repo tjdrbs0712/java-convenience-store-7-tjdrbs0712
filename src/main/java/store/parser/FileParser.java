@@ -16,6 +16,12 @@ import store.dto.PromotionDto;
 
 public class FileParser {
 
+    /**
+     * md 파일에서 프로모션을 읽어와 프로모션 클래스에 저장하는 메서드
+     *
+     * @param line 읽어온 데이터의 한줄
+     * @return 프로모션 리턴
+     */
     public static Promotion parsePromotion(String line) {
         String[] data = line.split(DELIMITER);
         String name = data[ZERO_INDEX];
@@ -27,6 +33,12 @@ public class FileParser {
         return new Promotion(new PromotionDto(name, buy, get, startDate, endDate));
     }
 
+    /**
+     * md 파일에서 상품을 읽어와 상품 클래스에 저장하는 메서드
+     *
+     * @param line 읽어온 데이터의 한줄
+     * @return 상품 리턴
+     */
     public static Product parseProduct(String line, Map<String, Promotion> promotions) {
         String[] data = line.split(DELIMITER);
         String name = data[ZERO_INDEX];

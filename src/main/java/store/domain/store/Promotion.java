@@ -39,6 +39,14 @@ public class Promotion {
         return endDate;
     }
 
+    /**
+     * 프로모션 상품의 값을 계산하기 위한 메서드
+     *
+     * @param product           구매한 상품
+     * @param requestedQuantity 구매 갯수
+     * @param purchaseAmount    구매 가격 계산 값을 저장 위한 클래스
+     * @return
+     */
     public GiveAway calculateGiveAway(Product product, int requestedQuantity, PurchaseAmount purchaseAmount) {
         int totalItems = buy + get;
         int freeItems = requestedQuantity / totalItems;

@@ -39,6 +39,11 @@ public class OrderService {
         outputView.receiptView(receiptDisplays);
     }
 
+    /**
+     * 주문할 상품을 입력하고 입력 값을 파싱해주는 메서드
+     *
+     * @return 주문한 상품 리스트
+     */
     public Cart orderProducts() {
         try {
             String order = inputView.purchaseProducts();

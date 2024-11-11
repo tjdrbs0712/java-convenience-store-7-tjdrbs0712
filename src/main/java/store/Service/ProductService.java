@@ -21,6 +21,12 @@ public class ProductService {
         this.outputView = outputView;
     }
 
+    /**
+     * 각각의 파일 주소로 데이터를 읽어 온다.
+     *
+     * @param PromotionsFilePath 프로모션 파일 주소
+     * @param ProductsFilePath   상품 파일 주소
+     */
     public void loadProducts(String PromotionsFilePath, String ProductsFilePath) {
         try {
             Map<String, Promotion> promotions = productRepository.loadPromotions(PromotionsFilePath);
@@ -31,6 +37,9 @@ public class ProductService {
         }
     }
 
+    /**
+     * 읽어온 데이터를 출력해주는 메서드
+     */
     public void displayProducts() {
         outputView.welcomeStoreView();
         List<String> productDisplays = ProductsViewUtil.ProductsViewFormatter(productRepository.getProducts());

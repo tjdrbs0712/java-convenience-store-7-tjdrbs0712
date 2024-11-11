@@ -35,6 +35,9 @@ public class Receipt {
         }
     }
 
+    /**
+     * 주문 상품 최종 금액, 프로모션 상품의 총 금액을 계산하는 메서드
+     */
     public void ResultReceipt() {
         purchaseAmount.calculateTotalPrice(purchaseProducts);
         int promotionTotalPrice = giveAway.stream().mapToInt(GiveAway::getTotalPrice).sum();

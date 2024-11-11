@@ -17,6 +17,11 @@ public class Cart {
         cartItems.add(cartItem);
     }
 
+    /**
+     * 구매하려는 상품이 존재하는지 검증
+     *
+     * @param products 전체 상품 리스트
+     */
     public void checkCartItem(List<Product> products) {
         for (CartItem cartItem : cartItems) {
             ProductValidator.validateProductContains(products, cartItem.getName());

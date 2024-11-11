@@ -38,10 +38,16 @@ public class StoreController {
         processPurchases();
     }
 
+    /**
+     * md 파일을 읽어 오는 메서드
+     */
     private void loadInitialData() {
         productService.loadProducts(PROMOTIONS_FILE_PATH, PRODUCTS_FILE_PATH);
     }
 
+    /**
+     * 읽어온 데이터를 출력하는 메서드
+     */
     private void processPurchases() {
         do {
             productService.displayProducts();
@@ -50,6 +56,9 @@ public class StoreController {
         } while (orderService.processOrderAndCheckRetry());
     }
 
+    /**
+     * 상품을 주문하는 메서드
+     */
     private Receipt inputCartItems() {
         try {
             Cart cart = orderService.orderProducts();

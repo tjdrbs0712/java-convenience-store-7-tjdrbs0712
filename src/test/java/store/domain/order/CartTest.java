@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import store.constant.FileConstant;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
+import store.message.ErrorMessage;
 import store.repository.ProductRepository;
 
 class CartTest {
@@ -63,7 +64,7 @@ class CartTest {
         // when & then
         assertThatThrownBy(() -> cart.checkCartItem(products))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("상품이 존재하지 않습니다");
+                .hasMessageContaining(ErrorMessage.PRODUCT_NOT_FOUND.getMessage());
     }
 
 }

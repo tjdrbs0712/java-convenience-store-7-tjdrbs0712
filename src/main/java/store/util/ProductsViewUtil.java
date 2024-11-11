@@ -1,7 +1,6 @@
 package store.util;
 
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import store.domain.StockStatus;
@@ -12,19 +11,24 @@ public class ProductsViewUtil {
 
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat("#,###");
 
+    /**
+     * 시작 상품 목록을 출력해기 위한 파싱 메서드
+     */
     public static List<String> ProductsViewFormatter(List<Product> products) {
-        LocalDate today = LocalDate.now();
         List<String> productDisplays = new ArrayList<>();
         for (Product product : products) {
             String line = "";
-            line = formatProducts(product, today);
+            line = formatProducts(product);
             productDisplays.add(line);
         }
         return productDisplays;
     }
 
-    private static String formatProducts(Product product, LocalDate today) {
-        String promotionInfo = getPromotionInfo(product.getPromotion(), today);
+    /**
+     *
+     */
+    private static String formatProducts(Product product) {
+        String promotionInfo = getPromotionInfo(product.getPromotion());
         String stockInfo = product.getQuantity() + StockStatus.IN_STOCK.getStatus();
         String price = PRICE_FORMAT.format(product.getPrice());
         if (product.getQuantity() == 0) {
@@ -36,7 +40,7 @@ public class ProductsViewUtil {
         return display.trim();
     }
 
-    private static String getPromotionInfo(Promotion promotion, LocalDate today) {
+    private static String getPromotionInfo(Promotion promotion) {
         if (promotion != null) {
             try {
                 return promotion.getName();
