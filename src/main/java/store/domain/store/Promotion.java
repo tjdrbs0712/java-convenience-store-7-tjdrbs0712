@@ -2,6 +2,7 @@ package store.domain.store;
 
 import store.domain.receipt.GiveAway;
 import store.domain.receipt.PurchaseAmount;
+import store.dto.PromotionDto;
 
 public class Promotion {
     private String name;
@@ -10,12 +11,12 @@ public class Promotion {
     private String startDate;
     private String endDate;
 
-    public Promotion(String name, int buy, int get, String startDate, String endDate) {
-        this.name = name;
-        this.buy = buy;
-        this.get = get;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public Promotion(PromotionDto promotionDto) {
+        this.name = promotionDto.getName();
+        this.buy = promotionDto.getBuy();
+        this.get = promotionDto.getGet();
+        this.startDate = promotionDto.getStartDate();
+        this.endDate = promotionDto.getEndDate();
     }
 
     public String getName() {

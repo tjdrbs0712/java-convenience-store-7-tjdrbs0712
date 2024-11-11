@@ -1,16 +1,18 @@
 package store.domain.store;
 
+import store.dto.ProductDto;
+
 public class Product {
     private String name;
     private int price;
     private int quantity;
     private Promotion promotion;
 
-    public Product(String name, int price, int quantity, Promotion promotion) {
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-        this.promotion = promotion;
+    public Product(ProductDto productDto) {
+        this.name = productDto.getName();
+        this.price = productDto.getPrice();
+        this.quantity = productDto.getQuantity();
+        this.promotion = productDto.getPromotion();
     }
 
     public String getName() {

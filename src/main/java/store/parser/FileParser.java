@@ -11,6 +11,8 @@ import static store.constant.GlobalConstant.ZERO_INDEX;
 import java.util.Map;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
+import store.dto.ProductDto;
+import store.dto.PromotionDto;
 
 public class FileParser {
 
@@ -22,7 +24,7 @@ public class FileParser {
         String startDate = data[THREE_DATE_INDEX];
         String endDate = data[FOUR_DATE_INDEX];
 
-        return new Promotion(name, buy, get, startDate, endDate);
+        return new Promotion(new PromotionDto(name, buy, get, startDate, endDate));
     }
 
     public static Product parseProduct(String line, Map<String, Promotion> promotions) {
@@ -35,7 +37,7 @@ public class FileParser {
             return null;
         }
         Promotion promotion = promotions.getOrDefault(promotionName, null);
-        return new Product(name, price, quantity, promotion);
+        return new Product(new ProductDto(name, price, quantity, promotion));
     }
 
 }
