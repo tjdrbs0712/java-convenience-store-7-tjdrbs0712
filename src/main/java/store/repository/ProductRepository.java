@@ -60,7 +60,7 @@ public class ProductRepository {
     }
 
     public List<Product> findProductsByName(String productName) {
-        return getProducts().stream()
+        return products.stream()
                 .filter(product -> product.getName().equals(productName))
                 .sorted(Comparator.comparing(product -> product.getPromotion() == null))
                 .toList();

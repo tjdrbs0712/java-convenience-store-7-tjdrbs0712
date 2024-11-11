@@ -5,22 +5,24 @@ import static store.constant.GlobalConstant.ONE_INDEX;
 import static store.constant.GlobalConstant.PRODUCT_QUANTITY_DELIMITER;
 import static store.constant.GlobalConstant.ZERO_INDEX;
 
+import java.util.List;
 import store.domain.order.Cart;
 import store.domain.order.CartItem;
+import store.domain.store.Product;
 import store.error.InputException;
 import store.message.ErrorMessage;
 import store.validation.ProductParserValidator;
 
 public class OrderParser {
 
-    public static Cart orderParser(String order) {
-
+    public static Cart orderParser(String order, List<Product> products) {
         Cart cart = new Cart();
         String[] productEntries = order.split(DELIMITER, -1);
 
         for (String productEntry : productEntries) {
             productParser(cart, productEntry);
         }
+        cart.checkCartItem(products);
 
         return cart;
     }

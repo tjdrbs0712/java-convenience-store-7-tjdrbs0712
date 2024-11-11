@@ -16,7 +16,7 @@ public class OrderCalculatorService {
     private final StoreRepository storeRepository;
     private final ProductRepository productRepository;
     private final InputView inputView;
-    private final Receipt receipt = new Receipt();
+    private Receipt receipt;
 
     public OrderCalculatorService(StoreRepository storeRepository, ProductRepository productRepository,
                                   InputView inputView) {
@@ -25,13 +25,8 @@ public class OrderCalculatorService {
         this.inputView = inputView;
     }
 
-    public void addCartItem(List<CartItem> cartItems) {
-        for (CartItem cartItem : cartItems) {
-            ProductValidator.validateProductContains(productRepository.getProducts(), cartItem.getName());
-        }
-    }
-
     public Receipt calculateTotal(List<CartItem> cartItems) {
+        receipt = new Receipt();
         for (CartItem cartItem : cartItems) {
             createPurchaseProductDto(cartItem.getName(), cartItem.getQuantity());
         }

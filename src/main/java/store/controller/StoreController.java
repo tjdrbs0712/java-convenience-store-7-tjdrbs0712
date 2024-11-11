@@ -3,8 +3,10 @@ package store.controller;
 import static store.constant.FileConstant.PRODUCTS_FILE_PATH;
 import static store.constant.FileConstant.PROMOTIONS_FILE_PATH;
 
+import store.Service.OrderCalculatorService;
 import store.Service.OrderService;
 import store.Service.ProductService;
+import store.domain.order.Cart;
 import store.domain.receipt.Receipt;
 import store.repository.ProductRepository;
 import store.repository.StoreRepository;
@@ -15,14 +17,20 @@ public class StoreController {
 
     private final ProductService productService;
     private final OrderService orderService;
-    private final ProductRepository productRepository = new ProductRepository();
-    private final StoreRepository storeRepository = new StoreRepository();
-    private final InputView inputView = new InputView();
-    private final OutputView outputView = new OutputView();
+    private final OrderCalculatorService orderCalculatorService;
+    private final ProductRepository productRepository;
+    private final StoreRepository storeRepository;
+    private final InputView inputView;
+    private final OutputView outputView;
 
     public StoreController() {
+        this.productRepository = new ProductRepository();
+        this.storeRepository = new StoreRepository();
+        this.inputView = new InputView();
+        this.outputView = new OutputView();
         this.productService = new ProductService(storeRepository, productRepository, outputView);
-        this.orderService = new OrderService(storeRepository, productRepository, inputView, outputView);
+        this.orderService = new OrderService(productRepository, inputView, outputView);
+        this.orderCalculatorService = new OrderCalculatorService(storeRepository, productRepository, inputView);
     }
 
     public void run() {
@@ -37,9 +45,19 @@ public class StoreController {
     private void processPurchases() {
         do {
             productService.displayProducts();
-            Receipt receipt = orderService.orderProducts();
+            Receipt receipt = inputCartItems();
             orderService.receiptView(receipt);
         } while (orderService.processOrderAndCheckRetry());
+    }
+
+    private Receipt inputCartItems() {
+        try {
+            Cart cart = orderService.orderProducts();
+            return orderCalculatorService.calculateTotal(cart.getCartItems());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return inputCartItems();
+        }
     }
 
 }

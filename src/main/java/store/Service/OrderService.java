@@ -5,29 +5,33 @@ import store.domain.order.Cart;
 import store.domain.receipt.Receipt;
 import store.parser.OrderParser;
 import store.repository.ProductRepository;
-import store.repository.StoreRepository;
 import store.util.ReceiptViewUtil;
+import store.validation.ProductValidator;
 import store.view.InputView;
 import store.view.OutputView;
 
 public class OrderService {
 
-    private final StoreRepository storeRepository;
     private final ProductRepository productRepository;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public OrderService(StoreRepository storeRepository, ProductRepository productRepository, InputView inputView,
+    public OrderService(ProductRepository productRepository, InputView inputView,
                         OutputView outputView) {
-        this.storeRepository = storeRepository;
         this.productRepository = productRepository;
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
     public boolean processOrderAndCheckRetry() {
-        String input = inputView.retryPurchase();
-        return input.equals("Y");
+        try {
+            String input = inputView.retryPurchase();
+            ProductValidator.validateInputYesOrNo(input);
+            return input.equals("Y");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return processOrderAndCheckRetry();
+        }
     }
 
     public void receiptView(Receipt receipt) {
@@ -35,14 +39,10 @@ public class OrderService {
         outputView.receiptView(receiptDisplays);
     }
 
-    public Receipt orderProducts() {
+    public Cart orderProducts() {
         try {
             String order = inputView.purchaseProducts();
-            Cart cart = OrderParser.orderParser(order);
-            OrderCalculatorService orderCalculatorService = new OrderCalculatorService(storeRepository,
-                    productRepository, inputView);
-            orderCalculatorService.addCartItem(cart.getCartItems());
-            return orderCalculatorService.calculateTotal(cart.getCartItems());
+            return OrderParser.orderParser(order, productRepository.getProducts());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return orderProducts();
