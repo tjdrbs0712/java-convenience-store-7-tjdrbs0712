@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
+import store.dto.ProductDto;
 import store.parser.FileParser;
 import store.util.DateUtil;
 
@@ -73,7 +74,7 @@ public class ProductRepository {
             Product product = products.get(i);
             if (!nonPromotionsProduct.getOrDefault(product.getName(), false)) {
                 Product nonPromotionProduct = new Product(
-                        product.getName(), product.getPrice(), 0, null);
+                        new ProductDto(product.getName(), product.getPrice(), 0, null));
                 products.add(i + 1, nonPromotionProduct);
                 nonPromotionsProduct.put(product.getName(), true);
                 i++;

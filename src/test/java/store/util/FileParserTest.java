@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
+import store.dto.PromotionDto;
 import store.parser.FileParser;
 
 class FileParserTest {
@@ -27,9 +28,9 @@ class FileParserTest {
     @Test
     @DisplayName("읽어온 상품 정보를 제대로 파싱하는지 테스트")
     void testParseProduct() {
-        Map<String, Promotion> promotions = Map.of(
-                "탄산2+1", new Promotion("탄산2+1", 2, 1, "2024-01-01", "2024-12-31")
-        );
+        PromotionDto promotionDto = new PromotionDto(
+                "탄산2+1", 2, 1, "2024-01-01", "2024-12-31");
+        Map<String, Promotion> promotions = Map.of("탄산2+1", new Promotion(promotionDto));
         String line = "콜라,1000,10,탄산2+1";
         Product product = FileParser.parseProduct(line, promotions);
 
