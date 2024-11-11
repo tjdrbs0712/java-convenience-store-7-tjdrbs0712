@@ -56,13 +56,15 @@ public class ProductRepository {
     }
 
     private void addProduct(String line, Map<String, Promotion> promotions,
-                            Map<String, Boolean> hasNonPromotionProduct) {
+                            Map<String, Boolean> nonPromotionProduct) {
         Product product = FileParser.parseProduct(line, promotions);
-        if (product != null) {
-            products.add(product);
+        if (product == null) {
+            return;
         }
+
+        products.add(product);
         if (product.getPromotion() == null) {
-            hasNonPromotionProduct.put(product.getName(), true);
+            nonPromotionProduct.put(product.getName(), true);
         }
     }
 
