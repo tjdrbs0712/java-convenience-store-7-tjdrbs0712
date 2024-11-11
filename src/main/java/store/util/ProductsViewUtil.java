@@ -17,9 +17,7 @@ public class ProductsViewUtil {
         List<String> productDisplays = new ArrayList<>();
         for (Product product : products) {
             String line = "";
-            if (isValidPromotion(product.getPromotion(), today) || product.getPromotion() == null) {
-                line = formatProducts(product, today);
-            }
+            line = formatProducts(product, today);
             productDisplays.add(line);
         }
         return productDisplays;
@@ -38,20 +36,8 @@ public class ProductsViewUtil {
         return display.trim();
     }
 
-    private static boolean isValidPromotion(Promotion promotion, LocalDate today) {
-        if (promotion == null) {
-            return false;
-        }
-
-        LocalDate startDate = LocalDate.parse(promotion.getStartDate());
-        LocalDate endDate = LocalDate.parse(promotion.getEndDate());
-
-        return (today.isEqual(startDate) || today.isAfter(startDate)) &&
-                (today.isEqual(endDate) || today.isBefore(endDate));
-    }
-
     private static String getPromotionInfo(Promotion promotion, LocalDate today) {
-        if (isValidPromotion(promotion, today)) {
+        if (promotion != null) {
             try {
                 return promotion.getName();
             } catch (IllegalArgumentException e) {

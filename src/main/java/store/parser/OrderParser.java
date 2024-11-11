@@ -1,5 +1,10 @@
 package store.parser;
 
+import static store.constant.GlobalConstant.DELIMITER;
+import static store.constant.GlobalConstant.ONE_INDEX;
+import static store.constant.GlobalConstant.PRODUCT_QUANTITY_DELIMITER;
+import static store.constant.GlobalConstant.ZERO_INDEX;
+
 import store.domain.order.Cart;
 import store.domain.order.CartItem;
 import store.error.InputException;
@@ -7,8 +12,6 @@ import store.message.ErrorMessage;
 import store.validation.ProductParserValidator;
 
 public class OrderParser {
-    private static final String DELIMITER = ",";
-    public static final String PRODUCT_QUANTITY_DELIMITER = "-";
 
     public static Cart orderParser(String order) {
 
@@ -26,8 +29,8 @@ public class OrderParser {
         ProductParserValidator.validateProductEntryFormat(productEntry);
         String[] productDetails = extractProductDetails(productEntry);
 
-        String productName = productDetails[0];
-        int quantity = parseQuantity(productDetails[1]);
+        String productName = productDetails[ZERO_INDEX];
+        int quantity = parseQuantity(productDetails[ONE_INDEX]);
 
         ProductParserValidator.validateProductNameContains(cart, productName);
 
@@ -35,7 +38,7 @@ public class OrderParser {
     }
 
     private static String[] extractProductDetails(String productEntry) {
-        String[] productDetails = productEntry.substring(1, productEntry.length() - 1)
+        String[] productDetails = productEntry.substring(ONE_INDEX, productEntry.length() - 1)
                 .split(PRODUCT_QUANTITY_DELIMITER);
         ProductParserValidator.validateProductDetailsFormat(productDetails);
         return productDetails;

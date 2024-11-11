@@ -11,8 +11,10 @@ import java.util.Map;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
 import store.parser.FileParser;
+import store.util.DateUtil;
 
 public class ProductRepository {
+
 
     private final List<Product> products = new ArrayList<>();
 
@@ -26,20 +28,34 @@ public class ProductRepository {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
-                Promotion promotion = FileParser.parsePromotion(line);
-                promotions.put(promotion.getName(), promotion);
+                addPromotion(line, promotions);
             }
         }
         return promotions;
     }
 
+    public void addPromotion(String line, Map<String, Promotion> promotions) {
+        Promotion promotion = FileParser.parsePromotion(line);
+
+        if (DateUtil.isPromotionActive(promotion)) {
+            promotions.put(promotion.getName(), promotion);
+        }
+    }
+
+
     public void loadProducts(String filePath, Map<String, Promotion> promotions) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
-                Product product = FileParser.parseProduct(line, promotions);
-                products.add(product);
+                addProduct(line, promotions);
             }
+        }
+    }
+
+    private void addProduct(String line, Map<String, Promotion> promotions) {
+        Product product = FileParser.parseProduct(line, promotions);
+        if (product != null) {
+            products.add(product);
         }
     }
 
@@ -49,5 +65,4 @@ public class ProductRepository {
                 .sorted(Comparator.comparing(product -> product.getPromotion() == null))
                 .toList();
     }
-
 }
