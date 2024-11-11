@@ -13,4 +13,7 @@ public class OutputView {
         productDisplays.forEach(System.out::println);
     }
 
+    public void receiptView(List<String> receiptDisplays) {
+        receiptDisplays.forEach(System.out::println);
+    }
 }

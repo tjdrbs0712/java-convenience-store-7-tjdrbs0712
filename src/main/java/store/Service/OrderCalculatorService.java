@@ -39,10 +39,6 @@ public class OrderCalculatorService {
         receipt.ResultReceipt();
         membershipDiscount();
         receipt.resultPay();
-        System.out.println("총 " + receipt.getPurchaseAmount().getTotalPrice());
-        System.out.println("행사 " + receipt.getPurchaseAmount().getPromotionDiscount());
-        System.out.println("맴버 " + receipt.getPurchaseAmount().getMembershipDiscount());
-        System.out.println("돈 " + receipt.getPurchaseAmount().getPay());
 
         updateProductQuantity(receipt.getPurchaseProducts());
         return receipt;
@@ -68,10 +64,15 @@ public class OrderCalculatorService {
     }
 
     private void membershipDiscount() {
-        String input = inputView.membershipDiscountView();
-        ProductValidator.validateInputYesOrNo(input);
-        if (input.equals("Y")) {
-            receipt.resultMembershipDiscount();
+        try {
+            String input = inputView.membershipDiscountView();
+            ProductValidator.validateInputYesOrNo(input);
+            if (input.equals("Y")) {
+                receipt.resultMembershipDiscount();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            membershipDiscount();
         }
     }
 

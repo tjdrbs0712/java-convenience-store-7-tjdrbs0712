@@ -25,4 +25,9 @@ public class InputView {
         return Console.readLine();
     }
 
+    public String retryPurchase() {
+        System.out.println(OutputMessage.RETRY_PURCHASE.getMessage());
+        return Console.readLine();
+    }
+
 }

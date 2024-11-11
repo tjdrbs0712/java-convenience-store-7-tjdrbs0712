@@ -5,6 +5,7 @@ import static store.constant.FileConstant.PROMOTIONS_FILE_PATH;
 
 import store.Service.OrderService;
 import store.Service.ProductService;
+import store.domain.receipt.Receipt;
 import store.repository.ProductRepository;
 import store.repository.StoreRepository;
 import store.view.InputView;
@@ -25,13 +26,20 @@ public class StoreController {
     }
 
     public void run() {
-        displayProducts();
-        orderService.orderProducts();
+        loadInitialData();
+        processPurchases();
     }
 
-    private void displayProducts() {
+    private void loadInitialData() {
         productService.loadProducts(PROMOTIONS_FILE_PATH, PRODUCTS_FILE_PATH);
-        productService.displayProducts();
+    }
+
+    private void processPurchases() {
+        do {
+            productService.displayProducts();
+            Receipt receipt = orderService.orderProducts();
+            orderService.receiptView(receipt);
+        } while (orderService.processOrderAndCheckRetry());
     }
 
 }

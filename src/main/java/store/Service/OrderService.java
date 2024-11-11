@@ -1,10 +1,12 @@
 package store.Service;
 
+import java.util.List;
 import store.domain.order.Cart;
 import store.domain.receipt.Receipt;
 import store.parser.OrderParser;
 import store.repository.ProductRepository;
 import store.repository.StoreRepository;
+import store.util.ReceiptViewUtil;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -23,19 +25,27 @@ public class OrderService {
         this.outputView = outputView;
     }
 
-    public void orderProducts() {
+    public boolean processOrderAndCheckRetry() {
+        String input = inputView.retryPurchase();
+        return input.equals("Y");
+    }
+
+    public void receiptView(Receipt receipt) {
+        List<String> receiptDisplays = ReceiptViewUtil.formatReceipt(receipt);
+        outputView.receiptView(receiptDisplays);
+    }
+
+    public Receipt orderProducts() {
         try {
             String order = inputView.purchaseProducts();
             Cart cart = OrderParser.orderParser(order);
             OrderCalculatorService orderCalculatorService = new OrderCalculatorService(storeRepository,
                     productRepository, inputView);
             orderCalculatorService.addCartItem(cart.getCartItems());
-            Receipt receipt = orderCalculatorService.calculateTotal(cart.getCartItems());
+            return orderCalculatorService.calculateTotal(cart.getCartItems());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            orderProducts();
+            return orderProducts();
         }
     }
-
-
 }
