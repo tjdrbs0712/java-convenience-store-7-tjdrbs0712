@@ -13,8 +13,12 @@ public class Receipt {
         return purchaseProducts;
     }
 
-    public void addPurchaseProducts(PurchaseProduct product) {
-        purchaseProducts.add(product);
+    public void addPurchaseProducts(PurchaseProduct purchaseProduct) {
+        purchaseProducts.add(purchaseProduct);
+    }
+
+    public void deleteLastPurchaseProduct() {
+        purchaseProducts.removeLast();
     }
 
     public void addGiveAway(GiveAway giveAway) {

@@ -51,11 +51,35 @@ public class OrderCalculatorService {
         ProductValidator.validateStockAvailability(products, requestedQuantity);
 
         int remainingQuantity = requestedQuantity;
+
         for (Product product : products) {
             remainingQuantity = processProduct(product, remainingQuantity);
-            if (remainingQuantity == 0) {
-                break;
+            alertNonPromotionQuantity(product, remainingQuantity);
+        }
+
+    }
+
+    private void alertNonPromotionQuantity(Product product, int remainingQuantity) {
+        int nonPromotionQuantity = 0;
+        if (product.getPromotion() != null && remainingQuantity > 0) {
+            nonPromotionQuantity = remainingQuantity + (product.getQuantity() % (product.getPromotion().getGet()
+                    + product.getPromotion().getBuy()));
+        }
+        if (nonPromotionQuantity > 0) {
+            retryPromotionQuantity(product, nonPromotionQuantity);
+        }
+    }
+
+    private void retryPromotionQuantity(Product product, int nonPromotionQuantity) {
+        try {
+            String input = inputView.nonPromotion(product.getName(), nonPromotionQuantity);
+            ProductValidator.validateInputYesOrNo(input);
+            if (input.equals("N")) {
+                receipt.deleteLastPurchaseProduct();
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            retryPromotionQuantity(product, nonPromotionQuantity);
         }
     }
 
@@ -91,18 +115,26 @@ public class OrderCalculatorService {
         return requestQuantity;
     }
 
-
     private int addPromotion(Product product, int requestQuantity) {
+        String input = getValidatedInput(product);
+        return inputYesOrNo(input, requestQuantity);
+    }
+
+    private String getValidatedInput(Product product) {
         try {
             String input = inputView.addGiveAway(product.getName());
             ProductValidator.validateInputYesOrNo(input);
-            if (input.equals("Y")) {
-                return requestQuantity++;
-            }
-            return requestQuantity;
+            return input;
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            return addPromotion(product, requestQuantity);
+            return getValidatedInput(product);
         }
+    }
+
+    private int inputYesOrNo(String input, int requestQuantity) {
+        if (input.equals("Y")) {
+            return requestQuantity + 1;
+        }
+        return requestQuantity;
     }
 }

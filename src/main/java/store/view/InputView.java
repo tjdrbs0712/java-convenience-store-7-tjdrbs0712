@@ -15,4 +15,9 @@ public class InputView {
         return Console.readLine();
     }
 
+    public String nonPromotion(String productName, int quantity) {
+        System.out.printf((OutputMessage.NON_PROMOTION_QUANTITY.getMessage()) + "%n", productName, quantity);
+        return Console.readLine();
+    }
+
 }
