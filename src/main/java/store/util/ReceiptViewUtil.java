@@ -16,6 +16,9 @@ public class ReceiptViewUtil {
     private static final String STRING_PRESENT_FORMAT = "%-10s\t%-5s";
     private static final String STRING_PRICE_FORMAT = "%-10s\t\t\t%-10s";
 
+    /**
+     * 영수증 계산 결과 출력을 위한 파싱 메서드
+     */
     public static List<String> formatReceipt(Receipt receipt) {
         List<PurchaseProductSummary> productSummaries = aggregateProductSummaries(receipt.getPurchaseProducts());
 
