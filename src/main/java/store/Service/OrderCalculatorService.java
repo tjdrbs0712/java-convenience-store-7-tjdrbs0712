@@ -30,13 +30,15 @@ public class OrderCalculatorService {
         for (CartItem cartItem : cartItems) {
             createPurchaseProductDto(cartItem.getName(), cartItem.getQuantity());
         }
+        result();
+        return receipt;
+    }
 
+    private void result() {
         receipt.ResultReceipt();
         membershipDiscount();
         receipt.resultPay();
-
         updateProductQuantity(receipt.getPurchaseProducts());
-        return receipt;
     }
 
     private void updateProductQuantity(List<PurchaseProduct> purchaseProducts) {
@@ -54,7 +56,9 @@ public class OrderCalculatorService {
 
         for (Product product : products) {
             remainingQuantity = processProduct(product, remainingQuantity);
-            alertNonPromotionQuantity(product, remainingQuantity);
+            if (!alertNonPromotionQuantity(product, remainingQuantity, requestedQuantity)) {
+                break;
+            }
         }
     }
 
@@ -72,6 +76,13 @@ public class OrderCalculatorService {
     }
 
     private int processProduct(Product product, int requestQuantity) {
+        int remainingQuantity = applyPromotionIfNeeded(product, requestQuantity);
+        int purchaseQuantity = calculatePurchaseQuantity(product, remainingQuantity);
+        addProductToReceipt(product, purchaseQuantity);
+        return remainingQuantity - purchaseQuantity;
+    }
+
+    private int applyPromotionIfNeeded(Product product, int requestQuantity) {
         Promotion promotion = product.getPromotion();
         int productQuantity = product.getQuantity();
 
@@ -80,12 +91,17 @@ public class OrderCalculatorService {
             receipt.addGiveAway(promotion.calculateGiveAway(product, Math.min(requestQuantity, productQuantity),
                     receipt.getPurchaseAmount()));
         }
+        return requestQuantity;
+    }
 
-        int purchaseQuantity = Math.min(productQuantity, requestQuantity);
+    private int calculatePurchaseQuantity(Product product, int requestQuantity) {
+        return Math.min(product.getQuantity(), requestQuantity);
+    }
+
+    private void addProductToReceipt(Product product, int purchaseQuantity) {
+        Promotion promotion = product.getPromotion();
         receipt.addPurchaseProducts(
                 new PurchaseProduct(product.getName(), purchaseQuantity, product.getPrice(), promotion));
-
-        return requestQuantity - purchaseQuantity;
     }
 
     private int applyPromotionNeed(Product product, Promotion promotion, int requestQuantity, int productQuantity) {
@@ -127,27 +143,27 @@ public class OrderCalculatorService {
         return requestQuantity;
     }
 
-    private void alertNonPromotionQuantity(Product product, int remainingQuantity) {
+    private boolean alertNonPromotionQuantity(Product product, int remainingQuantity, int requestedQuantity) {
         int nonPromotionQuantity = 0;
         if (product.getPromotion() != null && remainingQuantity > 0) {
             nonPromotionQuantity = remainingQuantity + (product.getQuantity() % (product.getPromotion().getGet()
                     + product.getPromotion().getBuy()));
         }
-        if (nonPromotionQuantity > 0) {
-            retryPromotionQuantity(product, nonPromotionQuantity);
+        if (nonPromotionQuantity > 0 && !retryPromotionQuantity(product, nonPromotionQuantity)) {
+            receipt.getPurchaseProducts().getLast().updateQuantity(requestedQuantity - nonPromotionQuantity);
+            return false;
         }
+        return true;
     }
 
-    private void retryPromotionQuantity(Product product, int nonPromotionQuantity) {
+    private boolean retryPromotionQuantity(Product product, int nonPromotionQuantity) {
         try {
             String input = inputView.nonPromotion(product.getName(), nonPromotionQuantity);
             ProductValidator.validateInputYesOrNo(input);
-            if (input.equals("N")) {
-                receipt.deleteLastPurchaseProduct();
-            }
+            return !input.equals("N");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-            retryPromotionQuantity(product, nonPromotionQuantity);
+            return retryPromotionQuantity(product, nonPromotionQuantity);
         }
     }
 }

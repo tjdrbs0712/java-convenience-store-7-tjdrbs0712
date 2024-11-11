@@ -3,10 +3,10 @@ package store.domain.receipt;
 import store.domain.store.Promotion;
 
 public class PurchaseProduct {
-    private final String name;
-    private final int quantity;
-    private final int price;
-    private final Promotion promotion;
+    private String name;
+    private int quantity;
+    private int price;
+    private Promotion promotion;
 
     public PurchaseProduct(String name, int quantity, int price, Promotion promotion) {
         this.name = name;
@@ -29,6 +29,10 @@ public class PurchaseProduct {
 
     public Promotion getPromotion() {
         return promotion;
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
 }
