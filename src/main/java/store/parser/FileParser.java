@@ -31,11 +31,9 @@ public class FileParser {
         int price = Integer.parseInt(data[ONE_INDEX]);
         int quantity = Integer.parseInt(data[TWO_INDEX]);
         String promotionName = data[THREE_DATE_INDEX];
-
         if (!promotionName.equals(STRING_NULL) && !promotions.containsKey(promotionName)) {
             return null;
         }
-
         Promotion promotion = promotions.getOrDefault(promotionName, null);
         return new Product(name, price, quantity, promotion);
     }

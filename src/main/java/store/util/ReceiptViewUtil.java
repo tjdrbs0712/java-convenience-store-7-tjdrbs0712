@@ -50,6 +50,9 @@ public class ReceiptViewUtil {
     }
 
     private static void addGiveAways(List<String> receiptDisplays, List<GiveAway> giveAways) {
+        if (giveAways.isEmpty()) {
+            return;
+        }
         receiptDisplays.add(OutputMessage.PRESENTATION.getMessage());
         for (GiveAway giveAway : giveAways) {
             receiptDisplays.add(String.format(STRING_PRESENT_FORMAT, giveAway.getName(), giveAway.getQuantity()));

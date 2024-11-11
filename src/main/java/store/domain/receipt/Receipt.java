@@ -34,7 +34,9 @@ public class Receipt {
     }
 
     public void addGiveAway(GiveAway giveAway) {
-        this.giveAway.add(giveAway);
+        if (giveAway != null) {
+            this.giveAway.add(giveAway);
+        }
     }
 
     public void ResultReceipt() {

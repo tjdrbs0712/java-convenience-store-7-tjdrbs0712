@@ -43,6 +43,11 @@ public class Promotion {
         int freeItems = requestedQuantity / totalItems;
         int promotionPrice = freeItems * product.getPrice();
         purchaseAmount.addNetPrice(product.getPrice() * freeItems * totalItems);
+
+        if (freeItems == 0) {
+            return null;
+        }
+
         return new GiveAway(product.getName(), freeItems, promotionPrice);
     }
 }
