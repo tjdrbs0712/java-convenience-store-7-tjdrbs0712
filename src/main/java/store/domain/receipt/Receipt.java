@@ -7,10 +7,22 @@ public class Receipt {
 
     private final List<PurchaseProduct> purchaseProducts = new ArrayList<>();
     private final List<GiveAway> giveAway = new ArrayList<>();
-    private PurchaseAmount purchaseAmount;
+    private final PurchaseAmount purchaseAmount;
+
+    public Receipt() {
+        purchaseAmount = new PurchaseAmount();
+    }
 
     public List<PurchaseProduct> getPurchaseProducts() {
         return purchaseProducts;
+    }
+
+    public List<GiveAway> getGiveAway() {
+        return giveAway;
+    }
+
+    public PurchaseAmount getPurchaseAmount() {
+        return purchaseAmount;
     }
 
     public void addPurchaseProducts(PurchaseProduct purchaseProduct) {
@@ -25,11 +37,18 @@ public class Receipt {
         this.giveAway.add(giveAway);
     }
 
-    public void resultPurchaseAmount(PurchaseAmount purchaseAmount) {
-        this.purchaseAmount = purchaseAmount;
+    public void ResultReceipt() {
+        purchaseAmount.totalPriceCalculator(purchaseProducts);
+        int promotionTotalPrice = giveAway.stream().mapToInt(GiveAway::getTotalPrice).sum();
+        purchaseAmount.resultPromotionDiscount(promotionTotalPrice);
     }
 
-    public PurchaseProduct getLastAddProduct() {
-        return purchaseProducts.getLast();
+    public void resultMembershipDiscount() {
+        purchaseAmount.membershipDiscountCal();
     }
+
+    public void resultPay() {
+        purchaseAmount.resultPay();
+    }
+
 }

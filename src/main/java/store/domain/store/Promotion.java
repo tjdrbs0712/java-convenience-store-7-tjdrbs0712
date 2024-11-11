@@ -1,6 +1,7 @@
 package store.domain.store;
 
 import store.domain.receipt.GiveAway;
+import store.domain.receipt.PurchaseAmount;
 
 public class Promotion {
     private String name;
@@ -37,8 +38,11 @@ public class Promotion {
         return endDate;
     }
 
-    public GiveAway calculateGiveAway(Product product, int requestedQuantity) {
-        int freeItems = requestedQuantity / (buy + get);
-        return new GiveAway(product.getName(), freeItems);
+    public GiveAway calculateGiveAway(Product product, int requestedQuantity, PurchaseAmount purchaseAmount) {
+        int totalItems = buy + get;
+        int freeItems = requestedQuantity / totalItems;
+        int promotionPrice = freeItems * product.getPrice();
+        purchaseAmount.addNetPrice(product.getPrice() * freeItems * totalItems);
+        return new GiveAway(product.getName(), freeItems, promotionPrice);
     }
 }

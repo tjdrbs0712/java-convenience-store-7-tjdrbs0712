@@ -20,4 +20,9 @@ public class InputView {
         return Console.readLine();
     }
 
+    public String membershipDiscountView() {
+        System.out.println(OutputMessage.MEMBERSHIP_DISCOUNT.getMessage());
+        return Console.readLine();
+    }
+
 }

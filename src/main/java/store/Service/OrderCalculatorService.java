@@ -35,14 +35,23 @@ public class OrderCalculatorService {
         for (CartItem cartItem : cartItems) {
             createPurchaseProductDto(cartItem.getName(), cartItem.getQuantity());
         }
+
+        receipt.ResultReceipt();
+        membershipDiscount();
+        receipt.resultPay();
+        System.out.println("총 " + receipt.getPurchaseAmount().getTotalPrice());
+        System.out.println("행사 " + receipt.getPurchaseAmount().getPromotionDiscount());
+        System.out.println("맴버 " + receipt.getPurchaseAmount().getMembershipDiscount());
+        System.out.println("돈 " + receipt.getPurchaseAmount().getPay());
+
         updateProductQuantity(receipt.getPurchaseProducts());
         return receipt;
     }
 
     private void updateProductQuantity(List<PurchaseProduct> purchaseProducts) {
-        for (PurchaseProduct dto : purchaseProducts) {
-            Product product = storeRepository.findProduct(dto.getName(), dto.getPromotion());
-            product.updateQuantity(dto.getQuantity());
+        for (PurchaseProduct purchaseProduct : purchaseProducts) {
+            Product product = storeRepository.findProduct(purchaseProduct.getName(), purchaseProduct.getPromotion());
+            product.updateQuantity(purchaseProduct.getQuantity());
         }
     }
 
@@ -56,30 +65,13 @@ public class OrderCalculatorService {
             remainingQuantity = processProduct(product, remainingQuantity);
             alertNonPromotionQuantity(product, remainingQuantity);
         }
-
     }
 
-    private void alertNonPromotionQuantity(Product product, int remainingQuantity) {
-        int nonPromotionQuantity = 0;
-        if (product.getPromotion() != null && remainingQuantity > 0) {
-            nonPromotionQuantity = remainingQuantity + (product.getQuantity() % (product.getPromotion().getGet()
-                    + product.getPromotion().getBuy()));
-        }
-        if (nonPromotionQuantity > 0) {
-            retryPromotionQuantity(product, nonPromotionQuantity);
-        }
-    }
-
-    private void retryPromotionQuantity(Product product, int nonPromotionQuantity) {
-        try {
-            String input = inputView.nonPromotion(product.getName(), nonPromotionQuantity);
-            ProductValidator.validateInputYesOrNo(input);
-            if (input.equals("N")) {
-                receipt.deleteLastPurchaseProduct();
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            retryPromotionQuantity(product, nonPromotionQuantity);
+    private void membershipDiscount() {
+        String input = inputView.membershipDiscountView();
+        ProductValidator.validateInputYesOrNo(input);
+        if (input.equals("Y")) {
+            receipt.resultMembershipDiscount();
         }
     }
 
@@ -89,7 +81,8 @@ public class OrderCalculatorService {
 
         if (promotion != null) {
             requestQuantity = applyPromotionNeed(product, promotion, requestQuantity, productQuantity);
-            receipt.addGiveAway(promotion.calculateGiveAway(product, Math.min(requestQuantity, productQuantity)));
+            receipt.addGiveAway(promotion.calculateGiveAway(product, Math.min(requestQuantity, productQuantity),
+                    receipt.getPurchaseAmount()));
         }
 
         int purchaseQuantity = Math.min(productQuantity, requestQuantity);
@@ -136,5 +129,29 @@ public class OrderCalculatorService {
             return requestQuantity + 1;
         }
         return requestQuantity;
+    }
+
+    private void alertNonPromotionQuantity(Product product, int remainingQuantity) {
+        int nonPromotionQuantity = 0;
+        if (product.getPromotion() != null && remainingQuantity > 0) {
+            nonPromotionQuantity = remainingQuantity + (product.getQuantity() % (product.getPromotion().getGet()
+                    + product.getPromotion().getBuy()));
+        }
+        if (nonPromotionQuantity > 0) {
+            retryPromotionQuantity(product, nonPromotionQuantity);
+        }
+    }
+
+    private void retryPromotionQuantity(Product product, int nonPromotionQuantity) {
+        try {
+            String input = inputView.nonPromotion(product.getName(), nonPromotionQuantity);
+            ProductValidator.validateInputYesOrNo(input);
+            if (input.equals("N")) {
+                receipt.deleteLastPurchaseProduct();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            retryPromotionQuantity(product, nonPromotionQuantity);
+        }
     }
 }

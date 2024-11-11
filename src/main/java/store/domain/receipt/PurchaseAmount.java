@@ -1,8 +1,11 @@
 package store.domain.receipt;
 
+import java.util.List;
+
 public class PurchaseAmount {
     private int totalPrice;
-    private int PromotionDiscount;
+    private int netPrice;
+    private int promotionDiscount;
     private int membershipDiscount;
     private int pay;
 
@@ -12,7 +15,7 @@ public class PurchaseAmount {
     }
 
     public int getPromotionDiscount() {
-        return PromotionDiscount;
+        return promotionDiscount;
     }
 
     public int getMembershipDiscount() {
@@ -23,8 +26,31 @@ public class PurchaseAmount {
         return pay;
     }
 
-    public void addTotalPrice(int price) {
-        totalPrice += price;
+    public void addNetPrice(int price) {
+        netPrice += price;
+    }
+
+    public void resultPromotionDiscount(int promotionDiscount) {
+        this.promotionDiscount = promotionDiscount;
+    }
+
+    public void totalPriceCalculator(List<PurchaseProduct> purchaseProducts) {
+        for (PurchaseProduct purchaseProduct : purchaseProducts) {
+            int purchaseQuantity = purchaseProduct.getQuantity();
+            int purchasePrice = purchaseProduct.getPrice();
+            this.totalPrice += purchaseQuantity * purchasePrice;
+        }
+    }
+
+    public void membershipDiscountCal() {
+        membershipDiscount = (int) ((totalPrice - netPrice) * 0.3f);
+        if (membershipDiscount > 8000) {
+            membershipDiscount = 8000;
+        }
+    }
+
+    public void resultPay() {
+        pay = totalPrice - promotionDiscount - membershipDiscount;
     }
 
 }
