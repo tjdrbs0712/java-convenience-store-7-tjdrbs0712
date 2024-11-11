@@ -44,18 +44,38 @@ public class ProductRepository {
 
 
     public void loadProducts(String filePath, Map<String, Promotion> promotions) throws IOException {
+        Map<String, Boolean> nonPromotionProduct = new HashMap<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             while ((line = br.readLine()) != null) {
-                addProduct(line, promotions);
+                addProduct(line, promotions, nonPromotionProduct);
             }
         }
+        addNonPromotion(nonPromotionProduct);
     }
 
-    private void addProduct(String line, Map<String, Promotion> promotions) {
+    private void addProduct(String line, Map<String, Promotion> promotions,
+                            Map<String, Boolean> hasNonPromotionProduct) {
         Product product = FileParser.parseProduct(line, promotions);
         if (product != null) {
             products.add(product);
+        }
+        if (product.getPromotion() == null) {
+            hasNonPromotionProduct.put(product.getName(), true);
+        }
+    }
+
+    private void addNonPromotion(Map<String, Boolean> nonPromotionsProduct) {
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            if (!nonPromotionsProduct.getOrDefault(product.getName(), false)) {
+                Product nonPromotionProduct = new Product(
+                        product.getName(), product.getPrice(), 0, null);
+                products.add(i + 1, nonPromotionProduct);
+                nonPromotionsProduct.put(product.getName(), true);
+                i++;
+            }
         }
     }
 
