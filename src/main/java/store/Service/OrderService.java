@@ -28,9 +28,9 @@ public class OrderService {
             String order = inputView.purchaseProducts();
             Cart cart = OrderParser.orderParser(order);
             OrderCalculatorService orderCalculatorService = new OrderCalculatorService(storeRepository,
-                    productRepository);
+                    productRepository, inputView);
             orderCalculatorService.addCartItem(cart.getCartItems());
-            Receipt receipt = orderCalculatorService.calculator(cart.getCartItems());
+            Receipt receipt = orderCalculatorService.calculateTotal(cart.getCartItems());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             orderProducts();

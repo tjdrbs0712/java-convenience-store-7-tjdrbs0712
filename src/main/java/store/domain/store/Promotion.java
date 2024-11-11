@@ -1,5 +1,7 @@
 package store.domain.store;
 
+import store.domain.receipt.GiveAway;
+
 public class Promotion {
     private String name;
     private int buy;
@@ -33,5 +35,10 @@ public class Promotion {
 
     public String getEndDate() {
         return endDate;
+    }
+
+    public GiveAway calculateGiveAway(Product product, int requestedQuantity) {
+        int freeItems = requestedQuantity / (buy + get);
+        return new GiveAway(product.getName(), freeItems);
     }
 }

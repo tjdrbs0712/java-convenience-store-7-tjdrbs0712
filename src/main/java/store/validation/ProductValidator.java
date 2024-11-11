@@ -16,4 +16,18 @@ public class ProductValidator {
             throw new InputException(ErrorMessage.PRODUCT_NOT_FOUND);
         }
     }
+
+    //재고 부족
+    public static void validateStockAvailability(List<Product> products, int requestedQuantity) {
+        int availableQuantity = products.stream().mapToInt(Product::getQuantity).sum();
+        if (availableQuantity < requestedQuantity) {
+            throw new InputException(ErrorMessage.EXCEEDS_STOCK);
+        }
+    }
+
+    public static void validateInputYesOrNo(String input) {
+        if (!input.equals("Y") && !input.equals("N")) {
+            throw new InputException(ErrorMessage.INVALID_INPUT);
+        }
+    }
 }

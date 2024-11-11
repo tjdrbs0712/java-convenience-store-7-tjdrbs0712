@@ -13,14 +13,6 @@ public class Receipt {
         return purchaseProducts;
     }
 
-    public List<GiveAway> getGiveAway() {
-        return giveAway;
-    }
-
-    public PurchaseAmount getPurchaseAmount() {
-        return purchaseAmount;
-    }
-
     public void addPurchaseProducts(PurchaseProduct product) {
         purchaseProducts.add(product);
     }
@@ -31,5 +23,9 @@ public class Receipt {
 
     public void resultPurchaseAmount(PurchaseAmount purchaseAmount) {
         this.purchaseAmount = purchaseAmount;
+    }
+
+    public PurchaseProduct getLastAddProduct() {
+        return purchaseProducts.getLast();
     }
 }

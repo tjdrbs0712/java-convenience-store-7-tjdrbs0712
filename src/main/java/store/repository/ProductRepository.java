@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,13 @@ public class ProductRepository {
                 products.add(product);
             }
         }
+    }
+
+    public List<Product> findProductsByName(String productName) {
+        return getProducts().stream()
+                .filter(product -> product.getName().equals(productName))
+                .sorted(Comparator.comparing(product -> product.getPromotion() == null))
+                .toList();
     }
 
 }

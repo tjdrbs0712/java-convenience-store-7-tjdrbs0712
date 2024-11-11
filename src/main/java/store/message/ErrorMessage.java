@@ -7,7 +7,6 @@ public enum ErrorMessage {
     INVALID_INPUT("잘못된 입력입니다. 다시 입력해 주세요."),
     DUPLICATE_PRODUCT("중복된 상품이 입력되었습니다."),
 
-
     ;
 
     private final String message;

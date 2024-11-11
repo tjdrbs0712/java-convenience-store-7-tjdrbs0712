@@ -1,34 +1,28 @@
 package store.Service;
 
-import static store.repository.StoreRepository.PROMOTION_NAME;
-
-import camp.nextstep.edu.missionutils.Console;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import store.domain.order.CartItem;
-import store.domain.receipt.GiveAway;
 import store.domain.receipt.PurchaseProduct;
 import store.domain.receipt.Receipt;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
-import store.dto.PurchaseProductDto;
-import store.error.InputException;
-import store.message.ErrorMessage;
 import store.repository.ProductRepository;
 import store.repository.StoreRepository;
 import store.validation.ProductValidator;
+import store.view.InputView;
 
 public class OrderCalculatorService {
 
     private final StoreRepository storeRepository;
     private final ProductRepository productRepository;
-    private final List<PurchaseProductDto> purchaseProductDtos = new ArrayList<>();
+    private final InputView inputView;
     private final Receipt receipt = new Receipt();
 
-    public OrderCalculatorService(StoreRepository storeRepository, ProductRepository productRepository) {
+    public OrderCalculatorService(StoreRepository storeRepository, ProductRepository productRepository,
+                                  InputView inputView) {
         this.storeRepository = storeRepository;
         this.productRepository = productRepository;
+        this.inputView = inputView;
     }
 
     public void addCartItem(List<CartItem> cartItems) {
@@ -37,100 +31,78 @@ public class OrderCalculatorService {
         }
     }
 
-    public Receipt calculator(List<CartItem> cartItems) {
-
+    public Receipt calculateTotal(List<CartItem> cartItems) {
         for (CartItem cartItem : cartItems) {
-            String productName = cartItem.getName();
-            int quantity = cartItem.getQuantity();
-
-            //어떤 상품을 몇개 구매했는지 계산
-            purchaseProductDtos.add(createPurchaseProductDto(productName, quantity));
+            createPurchaseProductDto(cartItem.getName(), cartItem.getQuantity());
         }
-        addPurchaseProduct(cartItems);
-        updateProducts(purchaseProductDtos);
-        for (PurchaseProductDto purchaseProductDto : purchaseProductDtos) {
-            System.out.println(purchaseProductDto.getName() + " = " + purchaseProductDto.getQuantity());
-        }
-        return null;
+        updateProductQuantity(receipt.getPurchaseProducts());
+        return receipt;
     }
 
-    // 구매한 상품의 갯수만큼 차감
-    private void updateProducts(List<PurchaseProductDto> purchaseProductDtos) {
-        for (PurchaseProductDto purchaseProductDto : purchaseProductDtos) {
-            Product product = storeRepository.findProduct(purchaseProductDto.getName(),
-                    purchaseProductDto.getPromotion());
-            product.updateQuantity(purchaseProductDto.getQuantity());
+    private void updateProductQuantity(List<PurchaseProduct> purchaseProducts) {
+        for (PurchaseProduct dto : purchaseProducts) {
+            Product product = storeRepository.findProduct(dto.getName(), dto.getPromotion());
+            product.updateQuantity(dto.getQuantity());
         }
     }
 
-    //구매한 상품 목록 = 영수증
-    private void addPurchaseProduct(List<CartItem> cartItems) {
-        for (CartItem cartItem : cartItems) {
-            Product product = storeRepository.getProducts().get(cartItem.getName() + PROMOTION_NAME);
+    private void createPurchaseProductDto(String productName, int requestedQuantity) {
+        List<Product> products = productRepository.findProductsByName(productName);
+        ProductValidator.validateStockAvailability(products, requestedQuantity);
 
-            int totalPrice = product.getPrice() * cartItem.getQuantity();
-            receipt.addPurchaseProducts(new PurchaseProduct(cartItem.getName(), cartItem.getQuantity(), totalPrice));
-        }
-    }
-
-    private PurchaseProductDto createPurchaseProductDto(String productName, int requestQuantity) {
-        List<Product> matchingProducts = findProductsByName(productName);
-        int availableQuantity = matchingProducts.stream().mapToInt(Product::getQuantity).sum();
-
-        if (availableQuantity < requestQuantity) {
-            throw new InputException(ErrorMessage.EXCEEDS_STOCK); // 재고 부족 예외
-        }
-
-        for (Product product : matchingProducts) {
-            int productQuantity = product.getQuantity();
-            Promotion promotion = product.getPromotion();
-
-            if (promotion != null) {
-                if (productQuantity >= requestQuantity) {
-                    requestQuantity = applyPromotion(product, requestQuantity);
-                }
-                addGiveProduct(product, requestQuantity);
+        int remainingQuantity = requestedQuantity;
+        for (Product product : products) {
+            remainingQuantity = processProduct(product, remainingQuantity);
+            if (remainingQuantity == 0) {
+                break;
             }
-
-            if (productQuantity >= requestQuantity) {
-                return new PurchaseProductDto(product.getName(), requestQuantity, product.getPrice(), promotion);
-            }
-            requestQuantity -= productQuantity;
-            purchaseProductDtos.add(
-                    new PurchaseProductDto(product.getName(), productQuantity, product.getPrice(), promotion));
         }
-
-        throw new InputException(ErrorMessage.INVALID_INPUT);
     }
 
-    private int applyPromotion(Product product, int requestQuantity) {
+    private int processProduct(Product product, int requestQuantity) {
         Promotion promotion = product.getPromotion();
-        int buy = promotion.getBuy();
-        int promotionQuantity = buy + 1;
+        int productQuantity = product.getQuantity();
 
+        if (promotion != null) {
+            requestQuantity = applyPromotionNeed(product, promotion, requestQuantity, productQuantity);
+            receipt.addGiveAway(promotion.calculateGiveAway(product, Math.min(requestQuantity, productQuantity)));
+        }
+
+        int purchaseQuantity = Math.min(productQuantity, requestQuantity);
+        receipt.addPurchaseProducts(
+                new PurchaseProduct(product.getName(), purchaseQuantity, product.getPrice(), promotion));
+
+        return requestQuantity - purchaseQuantity;
+    }
+
+    private int applyPromotionNeed(Product product, Promotion promotion, int requestQuantity, int productQuantity) {
+        if (requestQuantity < productQuantity) {
+            return applyPromotion(product, promotion, requestQuantity);
+        }
+        return requestQuantity;
+    }
+
+    private int applyPromotion(Product product, Promotion promotion, int requestQuantity) {
+        int buy = promotion.getBuy();
+        int promotionQuantity = buy + promotion.getGet();
         if (requestQuantity % promotionQuantity == buy) {
-            System.out.println("현재 " + product.getName() + "은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)");
-            String response = Console.readLine();
-            if ("Y".equalsIgnoreCase(response)) {
-                requestQuantity++;
-            }
+            return addPromotion(product, requestQuantity);
         }
         return requestQuantity;
     }
 
 
-    private List<Product> findProductsByName(String productName) {
-        return productRepository.getProducts().stream()
-                .filter(product -> product.getName().equals(productName))
-                .sorted(Comparator.comparing(product -> product.getPromotion() == null))
-                .toList();
+    private int addPromotion(Product product, int requestQuantity) {
+        try {
+            String input = inputView.addGiveAway(product.getName());
+            ProductValidator.validateInputYesOrNo(input);
+            if (input.equals("Y")) {
+                return requestQuantity++;
+            }
+            return requestQuantity;
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return addPromotion(product, requestQuantity);
+        }
     }
-
-    private void addGiveProduct(Product product, int requestQuantity) {
-        Promotion promotion = product.getPromotion();
-        int buyQuantity = promotion.getBuy();
-        int freeItems = requestQuantity / (buyQuantity + 1); // 증정품 수량 계산
-        receipt.addGiveAway(new GiveAway(product.getName(), requestQuantity + freeItems));
-    }
-
 }
