@@ -38,17 +38,17 @@ public class Receipt {
     }
 
     public void ResultReceipt() {
-        purchaseAmount.totalPriceCalculator(purchaseProducts);
+        purchaseAmount.calculateTotalPrice(purchaseProducts);
         int promotionTotalPrice = giveAway.stream().mapToInt(GiveAway::getTotalPrice).sum();
         purchaseAmount.resultPromotionDiscount(promotionTotalPrice);
     }
 
     public void resultMembershipDiscount() {
-        purchaseAmount.membershipDiscountCal();
+        purchaseAmount.calculateMembershipDiscount();
     }
 
     public void resultPay() {
-        purchaseAmount.resultPay();
+        purchaseAmount.calculateFinalPay();
     }
 
 }

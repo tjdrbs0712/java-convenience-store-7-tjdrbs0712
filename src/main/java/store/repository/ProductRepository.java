@@ -34,7 +34,7 @@ public class ProductRepository {
         return promotions;
     }
 
-    public void addPromotion(String line, Map<String, Promotion> promotions) {
+    private void addPromotion(String line, Map<String, Promotion> promotions) {
         Promotion promotion = FileParser.parsePromotion(line);
 
         if (DateUtil.isPromotionActive(promotion)) {

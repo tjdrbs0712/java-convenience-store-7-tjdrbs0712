@@ -3,6 +3,10 @@ package store.domain.receipt;
 import java.util.List;
 
 public class PurchaseAmount {
+
+    final int MAX_DISCOUNT = 8000;
+    final double DIVISION_VALUE = 0.3f;
+
     private int totalPrice;
     private int netPrice;
     private int promotionDiscount;
@@ -34,22 +38,18 @@ public class PurchaseAmount {
         this.promotionDiscount = promotionDiscount;
     }
 
-    public void totalPriceCalculator(List<PurchaseProduct> purchaseProducts) {
-        for (PurchaseProduct purchaseProduct : purchaseProducts) {
-            int purchaseQuantity = purchaseProduct.getQuantity();
-            int purchasePrice = purchaseProduct.getPrice();
-            this.totalPrice += purchaseQuantity * purchasePrice;
-        }
+    public void calculateTotalPrice(List<PurchaseProduct> purchaseProducts) {
+        totalPrice = purchaseProducts.stream()
+                .mapToInt(p -> p.getQuantity() * p.getPrice())
+                .sum();
     }
 
-    public void membershipDiscountCal() {
-        membershipDiscount = (int) ((totalPrice - netPrice) * 0.3f);
-        if (membershipDiscount > 8000) {
-            membershipDiscount = 8000;
-        }
+    public void calculateMembershipDiscount() {
+        membershipDiscount = (int) ((totalPrice - netPrice) * DIVISION_VALUE);
+        membershipDiscount = Math.min(membershipDiscount, MAX_DISCOUNT);
     }
 
-    public void resultPay() {
+    public void calculateFinalPay() {
         pay = totalPrice - promotionDiscount - membershipDiscount;
     }
 
