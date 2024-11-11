@@ -1,4 +1,4 @@
-package store.util;
+package store.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import store.domain.store.Product;
 import store.domain.store.Promotion;
 import store.dto.PromotionDto;
-import store.parser.FileParser;
 
 class FileParserTest {
 
