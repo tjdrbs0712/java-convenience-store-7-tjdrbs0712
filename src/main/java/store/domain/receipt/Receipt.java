@@ -29,10 +29,6 @@ public class Receipt {
         purchaseProducts.add(purchaseProduct);
     }
 
-    public void deleteLastPurchaseProduct() {
-        purchaseProducts.removeLast();
-    }
-
     public void addGiveAway(GiveAway giveAway) {
         if (giveAway != null) {
             this.giveAway.add(giveAway);
